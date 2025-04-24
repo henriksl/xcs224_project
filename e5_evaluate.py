@@ -8,7 +8,7 @@ from mteb.overview import MTEBTasks
 def evaluate_e5(model_index: int) -> None:
     """Function used to evaluate and save all results from e5 mini, base and large-instruct run"""
 
-    model_names: list[str] = ['intfloat/multilingual-e5-small', 'intfloat/multilingual-e5-base', 'intfloat/multilingual-e5-base']
+    model_names: list[str] = ['intfloat/multilingual-e5-small', 'intfloat/multilingual-e5-base', 'intfloat/multilingual-e5-large-instruct']
     
     task_names = ['MassiveIntentClassification', 'MassiveScenarioClassification',
                   'AmazonCounterfactualClassification', 'AmazonReviewsClassification',

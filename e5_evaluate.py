@@ -5,6 +5,21 @@ import argparse
 import mteb
 from mteb.overview import MTEBTasks
 
+def get_model_index() -> int:
+    """
+    Use model index to run script with different models
+    0 - mini
+    1 - base
+    2 - large-instruct
+    E.g. run
+        python e5_evaluate.py 0
+    to use mini model
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument('model')
+    args = parser.parse_args()
+    return int(args.model)
+
 def evaluate_e5(model_index: int) -> None:
     """Function used to evaluate and save all results from e5 mini, base and large-instruct run"""
 
@@ -24,22 +39,6 @@ def evaluate_e5(model_index: int) -> None:
 
     selected_model = model_names[model_index]
     evaluate_model(selected_model)
-
-
-def get_model_index() -> int:
-    """
-    Use model index to run script with different models
-    0 - mini
-    1 - base
-    2 - large-instruct
-    E.g. run
-        python e5_evaluate.py 0
-    to use mini model
-    """
-    parser = argparse.ArgumentParser()
-    parser.add_argument('model')
-    args = parser.parse_args()
-    return int(args.model)
 
 
 if __name__ == '__main__':

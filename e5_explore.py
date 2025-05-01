@@ -151,15 +151,12 @@ def clean_df(df: pd.DataFrame) -> pd.DataFrame:
     # Convert to short language codes and only keep succesful conversions
     index = list(df.index)
     index = [langcodes.standardize_tag(elem) for elem in index]
-    print(index)
     index = ['zh' if elem == 'cmo-Hans' else elem for elem in index]
     
     df.index = index
-    print(df.index)
     df = df[df.index.str.len() < 3]
 
     df.columns = shorten_task_names(list(df.columns))
-    print(df.index)
     if len(df.index) > 10:
         df = reduce_languages(df)
     

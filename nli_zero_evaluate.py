@@ -21,6 +21,7 @@ def remove_undesirable_configs(configs: list[str]) -> list[str]:
     return configs
 
 def evaluate_f1_text(labels: list[str], predictions: list[str], references: list[str]) -> float:
+    """Convert to indices and then calucalte f1"""
 
     label_index_dict = dict([(label, index) for index, label in enumerate(sorted(set(labels)))])
 
@@ -32,7 +33,7 @@ def evaluate_f1_text(labels: list[str], predictions: list[str], references: list
     return results["f1"]
 
 
-def perform_evaluations(model_name: str) -> dict[str, dict[str, float]]:
+def perform_evaluations(model_name: str, batch_size: int) -> dict[str, dict[str, float]]:
     """
     Evaluates model per task and config/language and returns macro f1 scores 
     per task per language.    
@@ -58,7 +59,7 @@ def perform_evaluations(model_name: str) -> dict[str, dict[str, float]]:
         configs = get_dataset_config_names(dataset_name)
         configs = remove_undesirable_configs(configs)
         labels: None | list[str] = None
-
+        
         for index, config in enumerate(configs):
 
             dataset = load_dataset(dataset_name, config, split='test')
@@ -67,7 +68,7 @@ def perform_evaluations(model_name: str) -> dict[str, dict[str, float]]:
                 labels = list(set(dataset['label']))
 
             predictions = list()
-            for output in tqdm(classifier(KeyDataset(dataset, 'text'), labels, multilabel=False)):
+            for output in tqdm(classifier(KeyDataset(dataset, 'text'), labels, multilabel=False, batch_size=batch_size)):
                 predictions.append(output['labels'][0])
                 
             references = dataset['label']
@@ -96,7 +97,9 @@ def evaluate_zero_nli(model_index: int) -> None:
         "joeddav/xlm-roberta-large-xnli",
     ][model_index]
 
-    results: dict[str, dict[str, float]] = perform_evaluations(model_name)
+    batch_size = [256, 128, 128][model_index]
+
+    results: dict[str, dict[str, float]] = perform_evaluations(model_name, batch_size)
 
     save_results(model_name, results)
 

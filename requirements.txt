@@ -27,3 +27,4 @@ datasets>=2.14.6
 wget
 #openai==1.61.1
 mteb
+langcodes

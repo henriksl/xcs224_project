@@ -42,7 +42,7 @@ def perform_evaluations(model_name: str, batch_size: int) -> dict[str, dict[str,
     classifier = pipeline("zero-shot-classification", model=model_name, trust_remote_code=True, device=0)
 
     dataset_names = [
-        "mteb/amazon_massive_domain",
+        "mteb/amazon_massive_intent",
         "mteb/amazon_massive_scenario",
         "mteb/amazon_counterfactual",
         "mteb/amazon_reviews_multi",

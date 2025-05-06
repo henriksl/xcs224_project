@@ -59,7 +59,7 @@ def perform_evaluations(model_name: str, batch_size: int) -> dict[str, dict[str,
         configs = get_dataset_config_names(dataset_name)
         configs = remove_undesirable_configs(configs)
         labels: None | list[str] = None
-        
+      
         for index, config in enumerate(configs):
 
             dataset = load_dataset(dataset_name, config, split='test')
@@ -67,9 +67,9 @@ def perform_evaluations(model_name: str, batch_size: int) -> dict[str, dict[str,
             if index == 0:
                 labels = list(set(dataset['label']))
 
-            predictions = list()
-            for output in tqdm(classifier(KeyDataset(dataset, 'text'), labels, multilabel=False, batch_size=batch_size)):
-                predictions.append(output['labels'][0])
+            predictions = [''] * len(dataset)
+            for index, output in enumerate(tqdm(classifier(KeyDataset(dataset, 'text'), labels, multilabel=False, batch_size=batch_size))):
+                predictions[index] = output['labels'][0]
                 
             references = dataset['label']
 
@@ -97,7 +97,7 @@ def evaluate_zero_nli(model_index: int) -> None:
         "joeddav/xlm-roberta-large-xnli",
     ][model_index]
 
-    batch_size = [256, 128, 128][model_index]
+    batch_size = [64, 32, 32][model_index]
 
     results: dict[str, dict[str, float]] = perform_evaluations(model_name, batch_size)
 

@@ -1,4 +1,8 @@
-"""Script to perform zero shot classification with nli models"""
+"""Script to perform zero shot classification with nli models
+
+scp -r -P 5013 scpdxcs@lab-9c86acde-e276-449a-b3db-7603077631c4.eastus.cloudapp.azure.com:/home/scpdxcs/xcs224_project/results/zero/MoritzLaurer_mDeBERTa_v3_base_mnli_xnli.json /home/henrik/Downloads/base.json
+
+"""
 
 import argparse
 import json

@@ -39,15 +39,13 @@ def perform_evaluations(model_name: str, batch_size: int) -> dict[str, dict[str,
     per task per language.    
     """
 
-    classifier = pipeline("zero-shot-classification", model=model_name)
+    classifier = pipeline("zero-shot-classification", model=model_name, trust_remote_code=True, device=0)
 
     dataset_names = [
-        "mteb/amazon_massive_intent",
+        "mteb/amazon_massive_domain",
         "mteb/amazon_massive_scenario",
         "mteb/amazon_counterfactual",
         "mteb/amazon_reviews_multi",
-        "mteb/mtop_domain",
-        "mteb/mtop_intent",
     ]
 
     results = dict()
@@ -62,14 +60,14 @@ def perform_evaluations(model_name: str, batch_size: int) -> dict[str, dict[str,
       
         for index, config in enumerate(configs):
 
-            dataset = load_dataset(dataset_name, config, split='test')
+            dataset = load_dataset(dataset_name, config, split='test', trust_remote_code=True)
 
             if index == 0:
                 labels = list(set(dataset['label']))
 
-            predictions = [''] * len(dataset)
-            for index, output in enumerate(tqdm(classifier(KeyDataset(dataset, 'text'), labels, multilabel=False, batch_size=batch_size))):
-                predictions[index] = output['labels'][0]
+            predictions = list()
+            for output in tqdm(classifier(KeyDataset(dataset, 'text'), labels, multilabel=False, batch_size=batch_size)):
+                predictions.append(output['labels'][0])
                 
             references = dataset['label']
 
@@ -97,7 +95,7 @@ def evaluate_zero_nli(model_index: int) -> None:
         "joeddav/xlm-roberta-large-xnli",
     ][model_index]
 
-    batch_size = [64, 32, 32][model_index]
+    batch_size = [128, 64, 64][model_index]
 
     results: dict[str, dict[str, float]] = perform_evaluations(model_name, batch_size)
 
